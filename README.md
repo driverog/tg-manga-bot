@@ -24,10 +24,10 @@ refresh - Reply to a PDF to refresh bot cache
 
 `API_HASH` - Get this value from https://my.telegram.org/apps
 
-`CHANNEL` - Channel that users must be subscribeb in order to use the bot
+`CHANNEL` - Channel that users must be subscribed in order to use the bot, Channel username wihtout t.me/   Example mangasupdates
 
-`DATABASE_URL_PRIMARY` - Will be used as database url. If not given heroku database will be used instead
+`DATABASE_URL_PRIMARY` - Will be used as database url. If not given heroku database will be used instead. Get this value from https://elephantsql.com/
 
 
 ## Deploy
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/driverog/tg-manga-bot)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
