@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import List, AsyncIterable
 from urllib.parse import urlparse, urljoin, quote
 
-from plugins.client import MangaClient, MangaCard, MangaChapter
+from plugins.client import MangaClient, MangaCard, MangaChapter, LastChapter
 
 
 @dataclass
@@ -27,6 +27,7 @@ class MangaDexClient(MangaClient):
     base_url = urlparse("https://api.mangadex.org/")
     search_url = urljoin(base_url.geturl(), "manga")
     search_param = 'q'
+    latest_uploads = 'https://api.mangadex.org/chapter?limit=32&offset=0&includes[]=manga&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[readableAt]=desc'
 
     covers_url = urlparse("https://uploads.mangadex.org/covers")
 
@@ -35,7 +36,7 @@ class MangaDexClient(MangaClient):
     }
 
     def __init__(self, *args, name="MangaDex", language="en", **kwargs):
-        super().__init__(*args, name=name, headers=self.pre_headers, **kwargs)
+        super().__init__(*args, name=f'{name}-{language}', headers=self.pre_headers, **kwargs)
         self.language = language
 
     def mangas_from_page(self, page: bytes):
@@ -127,4 +128,35 @@ class MangaDexClient(MangaClient):
             page += 1
 
     async def contains_url(self, url: str):
-        return url.startswith(self.base_url.geturl()) and (url.endswith(self.language) or self.language == 'en')
+        return url.startswith(self.base_url.geturl()) and url.endswith(self.language)
+
+    async def check_updated_urls(self, last_chapters: List[LastChapter]):
+
+        content = await self.get_url(f'{self.latest_uploads}&translatedLanguage[]={self.language}')
+
+        data = json.loads(content)['data']
+
+        updates = {}
+        for item in data:
+            ch_id = item['id']
+            manga_id = None
+            for rel in item['relationships']:
+                if rel['type'] == 'manga':
+                    manga_id = rel['id']
+            if manga_id and not updates.get(manga_id):
+                updates[manga_id] = ch_id
+
+        updated = []
+        not_updated = []
+
+        for lc in last_chapters:
+            upd = False
+            for manga_id, ch_id in updates.items():
+                if manga_id in lc.url and not ch_id in lc.chapter_url:
+                    upd = True
+                    updated.append(lc.url)
+                    break
+            if not upd:
+                not_updated.append(lc.url)
+
+        return updated, not_updated

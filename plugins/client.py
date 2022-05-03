@@ -118,8 +118,8 @@ class MangaClient(ClientSession, ABC):
     async def get_picture(self, url, *args, **kwargs):
         return await self.get_url(url, *args, **kwargs)
 
-    async def check_updated_urls(self, urls: List[LastChapter]):
-        return urls, []
+    async def check_updated_urls(self, last_chapters: List[LastChapter]):
+        return [lc.url for lc in last_chapters], []
 
     @abstractmethod
     async def search(self, query: str = "", page: int = 1) -> List[MangaCard]:

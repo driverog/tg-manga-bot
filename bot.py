@@ -366,9 +366,16 @@ async def update_mangas():
                 client_url_dictionary[client].add(url)
 
     for client, urls in client_url_dictionary.items():
+        # print('')
+        # print(f'Updating {client.name}')
+        # print(f'Urls:\t{list(urls)}')
+        # new_urls = [url for url in urls if not chapters_dictionary.get(url)]
+        # print(f'New Urls:\t{new_urls}')
         updated, not_updated = await client.check_updated_urls([chapters_dictionary[url] for url in urls if chapters_dictionary.get(url)])
         for url in not_updated:
             del url_client_dictionary[url]
+        # print(f'Updated:\t{list(updated)}')
+        # print(f'Not Updated:\t{list(not_updated)}')
     
     updated = dict()
 

@@ -6,7 +6,7 @@ from xml.dom.minidom import Document
 
 from bs4 import BeautifulSoup
 
-from plugins.client import MangaClient, MangaCard, MangaChapter
+from plugins.client import MangaClient, MangaCard, MangaChapter, LastChapter
 
 from .search_engine import search
 
@@ -78,6 +78,22 @@ class MangaSeeClient(MangaClient):
         texts = [f"{ch.get('Type')} {self.chapter_display(ch)}" for ch in chapter_list]
 
         return list(map(lambda x: MangaChapter(self, x[0], x[1], manga, []), zip(texts, links)))
+
+    def updates_from_page(self, page: bytes):
+
+        chap_pat = re.compile('vm.LatestJSON = ([\s\S]*?);')
+        chapters_str_list = chap_pat.findall(page.decode())
+        if not chapters_str_list:
+            return []
+        
+        chapter_list = json.loads(chapters_str_list[0])
+
+        urls = [f"{self.manga_url}/{ch['IndexName']}" for ch in chapter_list]
+        chapter_urls = [f"{self.chapter_url}/{ch['IndexName']}{self.chapter_url_encode(ch)}" for ch in chapter_list]
+
+        urls = dict(zip(urls[:32], chapter_urls[:32]))
+
+        return urls
 
     def chapterImage(self, ChapterString):
         Chapter = ChapterString[1:-1]
@@ -155,3 +171,14 @@ class MangaSeeClient(MangaClient):
 
     async def contains_url(self, url: str):
         return url.startswith(self.base_url.geturl())
+
+    async def check_updated_urls(self, last_chapters: List[LastChapter]):
+
+        content = await self.get_url(self.base_url.geturl())
+
+        updates = self.updates_from_page(content)
+
+        updated = [lc.url for lc in last_chapters if updates.get(lc.url) and updates.get(lc.url) != lc.chapter_url]
+        not_updated = [lc.url for lc in last_chapters if not updates.get(lc.url) or updates.get(lc.url) == lc.chapter_url]
+
+        return updated, not_updated
