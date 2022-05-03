@@ -1,0 +1,50 @@
+{
+    "name": "TG-MANGA-BOT",
+    "description": "Read manga from your favourites websites on telegram.",
+    "keywords": [
+        "manga",
+        "pyrogram",
+        "pdf",
+        "telegram",
+        "bot"
+    ],
+    "stack": "container",
+    "repository": "https://github.com/driverog/tg-manga-bot",
+    "success_url": "/welcome",
+    "env": {
+        "API_ID": {
+            "description": "Get this value from https://my.telegram.org/apps",
+            "value": "",
+            "required": true
+        },
+        "API_HASH": {
+            "description": "Get this value from https://my.telegram.org/apps",
+            "value": "",
+            "required": true
+        },
+        "BOT_TOKEN": {
+            "description": "Get this value from @BotFather in telegram",
+            "required": true
+        },
+        "CHANNEL": {
+            "description": "Channel that users must be subscribed in order to use the bot.",
+            "required": false
+        },
+        "DATABASE_URL_PRIMARY": {
+            "description": "Will be used as database url. If not given heroku database will be used instead.",
+            "required": false
+        }
+    },
+    "formation": {
+        "worker": {
+            "quantity": 1,
+            "size": "free"
+        }
+        },
+    "image": "heroku/python",
+    "addons": [
+        {
+        "plan": "heroku-postgresql"
+        }
+    ]
+}
