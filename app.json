@@ -27,7 +27,7 @@
             "required": true
         },
         "CHANNEL": {
-            "description": "Channel that users must be subscribeb in order to use the bot.",
+            "description": "Channel that users must be subscribed in order to use the bot.",
             "required": false
         },
         "DATABASE_URL_PRIMARY": {
