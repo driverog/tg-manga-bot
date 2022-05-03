@@ -2,10 +2,10 @@
 Read manga from your favourites websites on telegram.
 
 ## Current Development Bot
-https://t.me/idkpythonbot
+[@idkpythonbot](https://t.me/idkpythonbot)
 
 ## Telegram Channel
-https://t.me/tg_manga_bot
+[tg_manga_bot](https://t.me/tg_manga_bot)
 
 ## Commands
 ```
@@ -18,11 +18,11 @@ refresh - Reply to a PDF to refresh bot cache
 
 ## Env Variables
 
-`BOT_TOKEN` - Make a bot from https://t.me/BotFather and enter the token here.
+`BOT_TOKEN` - Make a bot from [@BotFather](https://t.me/BotFather) and enter the token here.
 
-`API_ID` - Get this value from https://my.telegram.org/apps
+`API_ID` - Get this value from [my.telegram.org](https://my.telegram.org/apps)
 
-`API_HASH` - Get this value from https://my.telegram.org/apps
+`API_HASH` - Get this value from [my.telegram.org](https://my.telegram.org/apps)
 
 `CHANNEL` - [Optional] Create a new channel (private/public), post anything in the channel, forward the post to https://t.me/message_ids_bot now copy and paste chat_forward in this field. 
 
