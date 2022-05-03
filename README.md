@@ -24,9 +24,9 @@ refresh - Reply to a PDF to refresh bot cache
 
 `API_HASH` - Get this value from https://my.telegram.org/apps
 
-`CHANNEL` - Channel that users must be subscribed in order to use the bot, Channel username wihtout t.me/   Example mangasupdates
+`CHANNEL` - [Optional] Create a new channel (private/public), post anything in the channel, forward the post to @message_ids_bot, now copy and paste chat_forward in this field. 
 
-`DATABASE_URL_PRIMARY` - Will be used as database url. If not given heroku database will be used instead. Get this value from https://elephantsql.com/
+`DATABASE_URL_PRIMARY` - [Optional] Will be used as database url. If not given heroku database will be used instead. Get this value from https://elephantsql.com/
 
 
 ## Deploy
