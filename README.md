@@ -24,7 +24,7 @@ refresh - Reply to a PDF to refresh bot cache
 
 `API_HASH` - Get this value from https://my.telegram.org/apps
 
-`CHANNEL` - [Optional] Create a new channel (private/public), post anything in the channel, forward the post to https://message_ids_bot now copy and paste chat_forward in this field. 
+`CHANNEL` - [Optional] Create a new channel (private/public), post anything in the channel, forward the post to https://t.me/message_ids_bot now copy and paste chat_forward in this field. 
 
 `DATABASE_URL_PRIMARY` - [Optional] Will be used as database url. If not given heroku database will be used instead. Get this value from https://elephantsql.com/
 
