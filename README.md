@@ -13,7 +13,8 @@ start - Usage Info
 subs - Your suscriptions
 refresh - Reply to a PDF to refresh bot cache
 ```
-#Env Variables
+
+##Env Variables
 
 ```
 BOT_TOKEN - Make a bot from https://t.me/BotFather and enter the token here.
