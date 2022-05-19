@@ -109,7 +109,7 @@ async def on_refresh(client: Client, message: Message):
                         "How to use? Just type the name of some manga you want to keep up to date.\n"
                         "\n"
                         "For example:\n"
-                        "`Fire Force`")
+                        "`Tokyo Ghoul`")
 
 
 @bot.on_message(filters=filters.command(['refresh']))
