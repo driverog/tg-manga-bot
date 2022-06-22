@@ -356,7 +356,7 @@ async def chapter_click(client, data, chat_id):
             ch_name = clean(f'{chapter.manga.name} - {chapter.name}', 45)
             pdf, thumb_path = fld2pdf(pictures_folder, ch_name)
             cbz = fld2cbz(pictures_folder, ch_name)
-            img2html(f"{chapter.manga.name}{chapter.name}", chapter)
+            img2html(chapter, f"{chapter.manga.name}{chapter.name}")
             html_file = f"{chapter.manga.name}{chapter.name}.html"
             telegraph_url = await img2tph(chapter, clean(f'{chapter.manga.name} {chapter.name}'))
 
