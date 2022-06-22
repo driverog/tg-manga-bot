@@ -13,6 +13,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, 
 from img2cbz.core import fld2cbz
 from img2pdf.core import fld2pdf
 from img2tph.core import img2tph
+from img2html.core import img2html
 from plugins import MangaClient, ManhuaKoClient, MangaCard, MangaChapter, ManhuaPlusClient, TMOClient, MangaDexClient, \
     MangaSeeClient, MangasInClient, McReaderClient, MangaKakalotClient, ManganeloClient, ManganatoClient, \
     KissMangaClient, MangatigreClient
@@ -59,6 +60,7 @@ plugin_dicts: Dict[str, Dict[str, MangaClient]] = {
 class OutputOptions(enum.IntEnum):
     PDF = 1
     CBZ = 2
+    HTML = 3
     Telegraph = 4
 
     def __and__(self, other):
@@ -343,6 +345,7 @@ async def chapter_click(client, data, chat_id):
         download = not chapterFile
         download = download or options & OutputOptions.PDF and not chapterFile.file_id
         download = download or options & OutputOptions.CBZ and not chapterFile.cbz_id
+        download = download or options & OutputOptions.CBZ and not chapterFile.html_id
         download = download or options & OutputOptions.Telegraph and not chapterFile.telegraph_url
 
         if download:
@@ -353,24 +356,28 @@ async def chapter_click(client, data, chat_id):
             ch_name = clean(f'{chapter.manga.name} - {chapter.name}', 45)
             pdf, thumb_path = fld2pdf(pictures_folder, ch_name)
             cbz = fld2cbz(pictures_folder, ch_name)
+            img2html(f"{chapter.manga.name}{chapter.name}", chapter)
+            html_file = f"{chapter.manga.name}{chapter.name}.html"
             telegraph_url = await img2tph(chapter, clean(f'{chapter.manga.name} {chapter.name}'))
 
             messages: List[Message] = await bot.send_media_group(cache_channel, [
                 InputMediaDocument(pdf, thumb=thumb_path),
-                InputMediaDocument(cbz, thumb=thumb_path, caption=f'{telegraph_url}')
+                InputMediaDocument(cbz, thumb=thumb_path), 
+                InputMediaDocument(html_file, thumb=thumb_path, caption=f'{telegraph_url}')
             ])
 
-            pdf_m, cbz_m = messages
+            pdf_m, cbz_m, html_m = messages
 
             if not chapterFile:
                 await db.add(ChapterFile(url=chapter.url, file_id=pdf_m.document.file_id,
                                          file_unique_id=pdf_m.document.file_unique_id, cbz_id=cbz_m.document.file_id,
-                                         cbz_unique_id=cbz_m.document.file_unique_id, telegraph_url=telegraph_url))
+                                         cbz_unique_id=cbz_m.document.file_unique_id, html_id=html_m.document.file_id,
+                                         html_unique_id=html_m.document.file_unique_id, telegraph_url=telegraph_url))
             else:
                 chapterFile.file_id, chapterFile.file_unique_id, chapterFile.cbz_id, \
-                chapterFile.cbz_unique_id, chapterFile.telegraph_url = \
+                chapterFile.cbz_unique_id, chapterFile.html_id, chapterFile.html_unique_id, chapterFile.telegraph_url = \
                     pdf_m.document.file_id, pdf_m.document.file_unique_id, cbz_m.document.file_id, \
-                    cbz_m.document.file_unique_id, telegraph_url
+                    cbz_m.document.file_unique_id, html_m.document.file_id, html_m.document.file_unique_id, telegraph_url
                 await db.add(chapterFile)
 
             shutil.rmtree(pictures_folder)
@@ -386,6 +393,8 @@ async def chapter_click(client, data, chat_id):
             media_docs.append(InputMediaDocument(chapterFile.file_id))
         if options & OutputOptions.CBZ:
             media_docs.append(InputMediaDocument(chapterFile.cbz_id))
+        if options & OutputOptions.HTML:
+            media_docs.append(InputMediaDocument(chapterFile.html_id))
 
         if len(media_docs) == 0:
             return await bot.send_message(chat_id, caption)
